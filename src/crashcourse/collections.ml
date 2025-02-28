@@ -62,6 +62,14 @@ let list_product (xs: int list): int =
 
 (** Hulgad. *)
 
+module Foo =
+struct
+  type t = bool
+  let x = 42
+  let f y = 2 * y
+  (* let f = fun y -> 2 * y *)
+end
+
 (** Näited. *)
 
 (** Täisarvude hulkade moodul. *)
@@ -71,7 +79,10 @@ module IntSet = Set.Make (Int)
     Vihje: IntSet.singleton.
     Vihje: IntSet.union. *)
 let rec intset_of_tree (t: int tree): IntSet.t =
-  failwith "TODO"
+  (* IntSet.of_list (list_of_tree t) *)
+  match t with
+  | Leaf x -> IntSet.singleton x
+  | Branch (l, r) -> IntSet.union (intset_of_tree l) (intset_of_tree r)
 
 
 (** Puu elementide mooduli tüüp/signatuur. *)
@@ -98,10 +109,14 @@ struct
 
   (** Teisendab puu hulgaks. *)
   let rec to_set (t: element tree): Set.t =
-    failwith "TODO"
+    match t with
+    | Leaf x -> Set.singleton x
+    | Branch (l, r) -> Set.union (to_set l) (to_set r)
 
   (** Teisendab puu sõneks.
       Vihje: Element.show. *)
   let rec show (t: element tree): string =
-    failwith "TODO"
+    match t with
+    | Leaf x -> Element.show x
+    | Branch (l, r) -> "(" ^ show l ^ " " ^ show r ^ ")"
 end
