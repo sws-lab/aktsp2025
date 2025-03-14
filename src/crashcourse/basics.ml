@@ -77,7 +77,9 @@ let rec triangular (n: int): int =
     Võib eeldada, et y pole negatiivne.
     Kasutada rekursiooni, mitte ** operaatorit. *)
 let rec pow (x: int) (y: int): int =
-  failwith "TODO"
+  match y with
+  | 0 -> 1
+  | _ -> x * pow x (y - 1)
 
 (** Näide:
     Kas täht on täishäälik (inglise keeles)? *)

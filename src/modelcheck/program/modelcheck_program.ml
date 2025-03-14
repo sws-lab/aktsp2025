@@ -39,10 +39,22 @@ struct
   let initial: t = (P2, Env.singleton "x" 1)
 
   let step ((point, env): t): t list =
-    failwith "TODO"
+    match point with
+    | P2 -> nondet P3 "y" (-10, 10) env
+    | P3 -> nondet P4 "z" (-10, 10) env
+    | P4 ->
+      if Env.find "z" env > 5 then
+        [(P5, env)]
+      else
+        [(P7, env)]
+    | P5 -> [(P8, Env.add "x" (Env.find "y" env) env)]
+    | P7 -> [(P8, Env.add "x" (Env.find "x" env + 1) env)]
+    | P8 -> []
 
   let is_error ((point, env): t): bool =
-    failwith "TODO"
+    match point with
+    | P8 -> Env.find "x" env = 0
+    | _ -> false
 end
 
 (** Mudel järgmise programmi jaoks:
@@ -64,10 +76,22 @@ struct
   let initial: t = (P1, Env.empty)
 
   let step ((point, env): t): t list =
-    failwith "TODO"
+    match point with
+    | P1 -> nondet P2 "x" (0, 1500) env
+    | P2 -> [(P3, Env.add "y" (Env.find "x" env) env)]
+    | P3 ->
+      if Env.find "x" env < 1024 then
+        [(P4, env)]
+      else
+        [(P7, env)]
+    | P4 -> [(P5, Env.add "x" (Env.find "x" env + 1) env)]
+    | P5 -> [(P3, Env.add "y" (Env.find "y" env + 1) env)]
+    | P7 -> []
 
   let is_error ((point, env): t): bool =
-    failwith "TODO"
+    match point with
+    | P7 -> Env.find "x" env <> Env.find "y" env
+    | _ -> false
 end
 
 (** Mudel järgmise programmi jaoks:
@@ -98,11 +122,33 @@ struct
   let initial: t = (P2, Env.singleton "y" 1)
 
   let step ((point, env): t): t list =
-    failwith "TODO"
+    match point with
+    | P2 -> nondet P3 "x0" (0, 5) env
+    | P3 -> nondet P4 "n0" (1, 5) env
+    | P4 -> [(P5, Env.add "x" (Env.find "x0" env) env)]
+    | P5 -> [(P6, Env.add "n" (Env.find "n0" env) env)]
+    | P6 ->
+      if Env.find "n" env > 1 then
+        [(P7, env)]
+      else
+        [(P15, env)]
+    | P7 ->
+      if Env.find "n" env mod 2 = 0 then
+        [(P8, env)]
+      else
+        [(P10, env)]
+    | P8 -> [(P13, Env.add "n" (Env.find "n" env / 2) env)]
+    | P10 -> [(P11, Env.add "y" (Env.find "x" env * Env.find "y" env) env)]
+    | P11 -> [(P13, Env.add "n" ((Env.find "n" env + 1) / 2) env)]
+    | P13 -> [(P6, Env.add "x" (Env.find "x" env * Env.find "x" env) env)]
+    | P15 -> [(P16, Env.add "y" (Env.find "x" env * Env.find "y" env) env)]
+    | P16 -> []
 
   (** Vihje: Kasuta Crashcourse.Basics.pow funktsiooni. *)
   let is_error ((point, env): t): bool =
-    failwith "TODO"
+    match point with
+    | P16 -> Env.find "y" env <> Crashcourse.Basics.pow (Env.find "x0" env) (Env.find "n0" env)
+    | _ -> false
 end
 
 (** Mudel parandatud PowProgram jaoks. *)
@@ -112,7 +158,7 @@ struct
 
   let step ((point, env): t): t list =
     match point with (* Siin saab üle defineerida ühe juhu. *)
-
+    | P11 -> [(P13, Env.add "n" ((Env.find "n" env - 1) / 2) env)]
     | _ -> step (point, env)
 end
 
