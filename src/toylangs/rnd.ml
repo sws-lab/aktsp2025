@@ -14,7 +14,21 @@ type coin = unit -> bool
 (** Väärtustab avaldise etteantud mündiga.
     NB! Väärtustamise järjekord on oluline. *)
 let rec eval (coin: coin) (e: t): int =
-  failwith "TODO"
+  match e with
+  | Num i -> i
+  | Neg e -> -(eval coin e)
+  (* | Add (e1, e2) -> eval coin e2 + eval coin e1 *)
+  | Add (e1, e2) ->
+    let i1 = eval coin e1 in
+    let i2 = eval coin e2 in
+    i1 + i2
+  | Flip (e1, e2) ->
+    (* if coin () then
+      eval coin e1
+    else
+      eval coin e2 *)
+    let e' = if coin () then e1 else e2 in
+    eval coin e'
 
 
 (** Konstrueerib kahe listi otsekorrutise. *)
@@ -26,7 +40,12 @@ let cartesian_product (l1: 'a list) (l2: 'b list): ('a * 'b) list =
     Vihje: List.map.
     Vihje: cartesian_product. *)
 let rec eval_list (e: t): int list =
-  failwith "TODO"
+  match e with
+  | Num i -> [i]
+  | Neg e -> List.map (fun x -> -x) (eval_list e)
+  | Flip (e1, e2) -> eval_list e1 @ eval_list e2
+  | Add (e1, e2) ->
+    List.map (fun (x, y) -> x + y) (cartesian_product (eval_list e1) (eval_list e2))
 
 
 module IntSet = Set.Make (Int)
@@ -39,4 +58,12 @@ module IntSet = Set.Make (Int)
            2. teostada otsekorrutisega operatsioon listidel (cartesian_product),
            3. teisendada list hulgaks (IntSet.of_list). *)
 let rec eval_set (e: t): IntSet.t =
-  failwith "TODO"
+  (* IntSet.of_list (eval_list e) *)
+  match e with
+  | Num i -> IntSet.singleton i
+  | Neg e -> IntSet.map (fun x -> -x) (eval_set e)
+  | Flip (e1, e2) -> IntSet.union (eval_set e1) (eval_set e2)
+  | Add (e1, e2) ->
+    let l1 = IntSet.elements (eval_set e1) in
+    let l2 = IntSet.elements (eval_set e2) in
+    IntSet.of_list (List.map (fun (x, y) -> x + y) (cartesian_product l1 l2))

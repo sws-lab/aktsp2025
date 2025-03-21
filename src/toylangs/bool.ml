@@ -13,5 +13,18 @@ type env = CharSet.t
 
 
 (** Vihje: Kasuta Crashcourse.Basics.implies funktsiooni. *)
-let rec eval (env: env) (e: t): bool =
-  failwith "TODO"
+let eval (env: env) (e: t): bool =
+  (* let eval' = eval env in
+  match e with
+  | Var x -> CharSet.mem x env
+  | Not e -> not (eval' e)
+  | Or (e1, e2) -> eval' e1 || eval' e2
+  | Imp (e1, e2) -> Crashcourse.Basics.implies (eval' e1) (eval' e2) *)
+  let rec eval' e =
+    match e with
+    | Var x -> CharSet.mem x env
+    | Not e -> not (eval' e)
+    | Or (e1, e2) -> eval' e1 || eval' e2
+    | Imp (e1, e2) -> Crashcourse.Basics.implies (eval' e1) (eval' e2)
+  in
+  eval' e
