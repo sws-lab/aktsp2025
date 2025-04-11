@@ -29,8 +29,8 @@ struct
   let rec eval_guard (env: ED.t) (expr: expr) (branch: bool): ED.t =
     let expr_value = eval_expr env expr in
     let zero = ID.of_int 0 in
-    if branch && ID.leq expr_value zero || 
-        not branch && not (ID.leq zero expr_value) then 
+    if branch && ID.leq expr_value zero ||
+        not branch && not (ID.leq zero expr_value) then
       ED.bot
     else
       match expr, branch with
@@ -66,48 +66,10 @@ struct
       let f_post_env = eval_stmt f_refined_env f in
       ED.join t_post_env f_post_env
     | While (c, b) ->
-      let b_refined_env = eval_guard env c true in
-      let b_post_env = eval_stmt b_refined_env b in
-      let while_result = ED.join env b_post_env in
-
-      let b_refined_env = eval_guard while_result c true in
-      let b_post_env = eval_stmt b_refined_env b in
-      let while_result = ED.join while_result b_post_env in
-      let b_refined_env = eval_guard while_result c true in
-      let b_post_env = eval_stmt b_refined_env b in
-      let while_result = ED.join while_result b_post_env in
-      let b_refined_env = eval_guard while_result c true in
-      let b_post_env = eval_stmt b_refined_env b in
-      let while_result = ED.join while_result b_post_env in
-      let b_refined_env = eval_guard while_result c true in
-      let b_post_env = eval_stmt b_refined_env b in
-      let while_result = ED.join while_result b_post_env in
-      let b_refined_env = eval_guard while_result c true in
-      let b_post_env = eval_stmt b_refined_env b in
-      let while_result = ED.join while_result b_post_env in
-      let b_refined_env = eval_guard while_result c true in
-      let b_post_env = eval_stmt b_refined_env b in
-      let while_result = ED.join while_result b_post_env in
-      let b_refined_env = eval_guard while_result c true in
-      let b_post_env = eval_stmt b_refined_env b in
-      let while_result = ED.join while_result b_post_env in
-      let b_refined_env = eval_guard while_result c true in
-      let b_post_env = eval_stmt b_refined_env b in
-      let while_result = ED.join while_result b_post_env in
-      let b_refined_env = eval_guard while_result c true in
-      let b_post_env = eval_stmt b_refined_env b in
-      let while_result = ED.join while_result b_post_env in
-      let b_refined_env = eval_guard while_result c true in
-      let b_post_env = eval_stmt b_refined_env b in
-      let while_result = ED.join while_result b_post_env in
-      let b_refined_env = eval_guard while_result c true in
-      let b_post_env = eval_stmt b_refined_env b in
-      let while_result = ED.join while_result b_post_env in
-      let b_refined_env = eval_guard while_result c true in
-      let b_post_env = eval_stmt b_refined_env b in
-      let while_result = ED.join while_result b_post_env in
-      let b_refined_env = eval_guard while_result c true in
-      let b_post_env = eval_stmt b_refined_env b in
-      let while_result = ED.join while_result b_post_env in
+      let f env' =
+        let b_refined_env = eval_guard env' c true in
+        eval_stmt b_refined_env b
+      in
+      let while_result = EDFP.closure f env in
       eval_guard while_result c false
 end

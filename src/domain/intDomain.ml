@@ -44,14 +44,27 @@ struct
   include Domain.Flat (struct type t = int [@@deriving eq, ord, show] end)
   let of_int i = Lift i
   let of_interval ((l, u): int * int): t =
-    failwith "TODO"
+    if l = u then
+      Lift l
+    else
+      Top
 
   (** Vihje: Eval.Concrete.eval_binary. *)
   let eval_binary (i1: t) (b: Ast.binary) (i2: t): t =
-    failwith "TODO"
+    match i1, i2 with
+    | Bot, _
+    | _, Bot -> Bot
+    | Lift i1, Lift i2 -> Lift (Eval.Concrete.eval_binary i1 b i2)
+    | Top, _
+    | _, Top -> Top
 
   let exclude (i: int) (i': t): t =
-    failwith "TODO"
+    match i' with
+    | Bot -> Bot
+    | Lift i' when i = i' -> Bot
+    | Lift i' -> Lift i'
+    | Top -> Top
+    (* | _ -> i' *)
 end
 
 (** Intervallide domeen. *)
@@ -65,14 +78,16 @@ struct
     let show = Format.asprintf "%a" pp
 
     let leq ((l1, u1): t) ((l2, u2): t): bool =
-      failwith "TODO"
+      l2 <= l1 && u1 <= u2
 
     let join ((l1, u1): t) ((l2, u2): t): t =
-      failwith "TODO"
+      (min l1 l2, max u1 u2)
 
     let eval_binary ((l1, u1): t) (b: Ast.binary) ((l2, u2): t): t =
       match b with
-
+      | Add -> (l1 + l2, u1 + u2)
+      | Lt when u1 < l2 -> (1, 1)
+      | Lt when u2 <= l1 -> (0, 0)
       | Eq | Ne | Lt | Le | Gt | Ge -> (0, 1) (* Võrdluse tulemus on 0 või 1, mis on korrektne, aga mitte täpne. Ettepoole saab implementeerida täpsemad juhud kui vaja. *)
 
       | _ -> failwith "TODO" (* Ei pea implementeerima kõiki operaatoreid, vaid ainult testideks vajalikud. *)

@@ -52,7 +52,8 @@ struct
     assert_equal Top (Flat.eval_binary (Flat.of_int 2) Add Top);
     assert_equal Top (Flat.eval_binary Top Add (Flat.of_int 2));
     assert_equal Bot (Flat.eval_binary (Flat.of_int 2) Add Bot);
-    assert_equal Bot (Flat.eval_binary Bot Add (Flat.of_int 2))
+    assert_equal Bot (Flat.eval_binary Bot Add (Flat.of_int 2));
+    assert_equal Bot (Flat.eval_binary Bot Add Top)
 
   let test_exclude _ =
     assert_equal (Flat.of_int 5) (Flat.exclude 4 (Flat.of_int 5));
