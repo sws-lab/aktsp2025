@@ -73,7 +73,7 @@ struct
     let eval_binary ((l1, u1): t) (b: Ast.binary) ((l2, u2): t): t =
       match b with
 
-      | Eq | Ne | Lt | Le | Gt | Ge -> (0, 1) (* Võrdluse tulemus on 0 või 1. Saaks implementeerida täpsemalt, aga meil pole vaja. *)
+      | Eq | Ne | Lt | Le | Gt | Ge -> (0, 1) (* Võrdluse tulemus on 0 või 1, mis on korrektne, aga mitte täpne. Ettepoole saab implementeerida täpsemad juhud kui vaja. *)
 
       | _ -> failwith "TODO" (* Ei pea implementeerima kõiki operaatoreid, vaid ainult testideks vajalikud. *)
   end
