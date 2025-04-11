@@ -137,7 +137,70 @@ struct
     ignore (Interval.eval_binary (Interval.of_int 2) Eq (Interval.of_int 3));
     ignore (Interval.eval_binary (Interval.of_int 2) Ne (Interval.of_int 3))
 
+  let test_eval_binary_lt _ =
+    assert_equal (Interval.of_int 1) (Interval.eval_binary (Interval.of_int 2) Lt (Interval.of_int 3));
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_int 2) Lt (Interval.of_int 2));
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_int 3) Lt (Interval.of_int 2));
 
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_int 2) Lt (Interval.of_interval (0, 5)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (0, 5)) Lt (Interval.of_int 2));
+
+    assert_equal (Interval.of_int 1) (Interval.eval_binary (Interval.of_int 2) Lt (Interval.of_interval (3, 5)));
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_interval (3, 5)) Lt (Interval.of_int 2));
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_int 2) Lt (Interval.of_interval (-1, 1)));
+    assert_equal (Interval.of_int 1) (Interval.eval_binary (Interval.of_interval (-1, 1)) Lt (Interval.of_int 2));
+
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (2, 6)) Lt (Interval.of_interval (3, 7)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (0, 10)) Lt (Interval.of_interval (2, 4)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (2, 4)) Lt (Interval.of_interval (0, 10)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (0, 2)) Lt (Interval.of_interval (-1, 1)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (-1, 1)) Lt (Interval.of_interval (0, 2)));
+
+    assert_equal (Interval.of_int 1) (Interval.eval_binary (Interval.of_interval (-1, 1)) Lt (Interval.of_interval (3, 5)));
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_interval (3, 5)) Lt (Interval.of_interval (-1, 1)))
+
+  let test_eval_binary_gt _ =
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_int 2) Gt (Interval.of_int 3));
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_int 2) Gt (Interval.of_int 2));
+    assert_equal (Interval.of_int 1) (Interval.eval_binary (Interval.of_int 3) Gt (Interval.of_int 2));
+
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_int 2) Gt (Interval.of_interval (0, 5)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (0, 5)) Gt (Interval.of_int 2));
+
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_int 2) Gt (Interval.of_interval (3, 5)));
+    assert_equal (Interval.of_int 1) (Interval.eval_binary (Interval.of_interval (3, 5)) Gt (Interval.of_int 2));
+    assert_equal (Interval.of_int 1) (Interval.eval_binary (Interval.of_int 2) Gt (Interval.of_interval (-1, 1)));
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_interval (-1, 1)) Gt (Interval.of_int 2));
+
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (2, 6)) Gt (Interval.of_interval (3, 7)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (0, 10)) Gt (Interval.of_interval (2, 4)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (2, 4)) Gt (Interval.of_interval (0, 10)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (0, 2)) Gt (Interval.of_interval (-1, 1)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (-1, 1)) Gt (Interval.of_interval (0, 2)));
+
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_interval (-1, 1)) Gt (Interval.of_interval (3, 5)));
+    assert_equal (Interval.of_int 1) (Interval.eval_binary (Interval.of_interval (3, 5)) Gt (Interval.of_interval (-1, 1)))
+
+  let test_eval_binary_eq _ =
+    assert_equal (Interval.of_int 1) (Interval.eval_binary (Interval.of_int 2) Eq (Interval.of_int 2));
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_int 2) Eq (Interval.of_int 3));
+
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_int 2) Eq (Interval.of_interval (0, 5)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (0, 5)) Eq (Interval.of_int 2));
+
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_int 2) Eq (Interval.of_interval (3, 5)));
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_interval (3, 5)) Eq (Interval.of_int 2));
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_int 2) Eq (Interval.of_interval (-1, 1)));
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_interval (-1, 1)) Eq (Interval.of_int 2));
+
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (2, 6)) Eq (Interval.of_interval (2, 6)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (0, 10)) Eq (Interval.of_interval (2, 4)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (2, 4)) Eq (Interval.of_interval (0, 10)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (0, 2)) Eq (Interval.of_interval (-1, 1)));
+    assert_equal (Interval.of_interval (0, 1)) (Interval.eval_binary (Interval.of_interval (-1, 1)) Eq (Interval.of_interval (0, 2)));
+
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_interval (-1, 1)) Eq (Interval.of_interval (3, 5)));
+    assert_equal (Interval.of_int 0) (Interval.eval_binary (Interval.of_interval (3, 5)) Eq (Interval.of_interval (-1, 1)))
 
   let test_exclude _ =
     assert_equal (Interval.of_interval (3, 5)) (Interval.exclude 6 (Interval.of_interval (3, 6)));
@@ -159,7 +222,9 @@ struct
         "sub" >:: test_eval_binary_sub;
         "mul" >:: test_eval_binary_mul;
         "comparison" >:: test_eval_binary_comparison;
-
+        "lt" >:: test_eval_binary_lt;
+        "gt" >:: test_eval_binary_gt;
+        "eq" >:: test_eval_binary_eq;
       ];
       "exclude" >:: test_exclude;
     ]
