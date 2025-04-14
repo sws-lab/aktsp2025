@@ -24,6 +24,13 @@
     * Väljund peaks olema `Hello, OCaml!`.
 
 
+## Uuendamine
+1. Navigeeri käsureal kloonitud projekti repositooriumi kausta.
+2. Käivita: `eval $(opam env)`
+3. Käivita: `opam update`
+4. Käivita: `opam install --deps-only --locked -y .` (NB! punkt)
+
+
 ## Kasutamine
 1. Navigeeri käsureal kloonitud projekti repositooriumi kausta.
 2. Käivita: `eval $(opam env)`
