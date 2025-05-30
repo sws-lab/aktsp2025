@@ -23,8 +23,29 @@ open Re
     Vihje: Re.equal.
     Vihje: Fixpoint. *)
 
-let rec simplify (r: t): t =
-  failwith "TODO"
+let rec simplify_step (r: t): t =
+  match r with
+  | Choice (r, r') when Re.equal r r' -> r
+  | Concat (r, Eps)
+  | Concat (Eps, r) -> r
+  | Star (Star _ as r') -> r'
+  | Concat (Star r, Star r') when Re.equal r r' -> Star r
+  | Choice (Empty, r)
+  | Choice (r, Empty) -> r
+  | Concat (Empty, r)
+  | Concat (r, Empty) -> Empty
+  | Star Empty -> Eps
+  | Star Eps -> Eps
+  | Empty
+  | Eps
+  | Char _ -> r
+  | Choice (l, r) -> Choice (simplify_step l, simplify_step r)
+  | Concat (l, r) -> Concat (simplify_step l, simplify_step r)
+  | Star r -> Star (simplify_step r)
+
+module ReFP = Fixpoint.Make (Re)
+
+let simplify = ReFP.fp simplify_step
 
 
 (** Alt-üles lahendus.
@@ -34,5 +55,26 @@ let rec simplify (r: t): t =
 
     Vihje: Re.equal. *)
 
+let rec simplify'_one (r: t): t =
+  match r with
+  | Choice (r, r') when Re.equal r r' -> r
+  | Concat (r, Eps)
+  | Concat (Eps, r) -> r
+  | Star (Star _ as r') -> r'
+  | Concat (Star r, Star r') when Re.equal r r' -> Star r
+  | Choice (Empty, r)
+  | Choice (r, Empty) -> r
+  | Concat (Empty, r)
+  | Concat (r, Empty) -> Empty
+  | Star Empty -> Eps
+  | Star Eps -> Eps
+  | _ -> r
+
 let rec simplify' (r: t): t =
-  failwith "TODO"
+  match r with
+  | Empty
+  | Eps
+  | Char _ -> r
+  | Choice (l, r) -> simplify'_one (Choice (simplify' l, simplify' r))
+  | Concat (l, r) -> simplify'_one (Concat (simplify' l, simplify' r))
+  | Star r -> simplify'_one (Star (simplify' r))
